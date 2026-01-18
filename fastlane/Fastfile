@@ -1,0 +1,83 @@
+default_platform(:android)
+
+platform :android do
+  desc "Build debug APK"
+  lane :build_debug do
+    gradle(
+      task: "assembleDebug",
+      print_command: false
+    )
+  end
+
+  desc "Build release APK"
+  lane :build_release do
+    gradle(
+      task: "assembleRelease",
+      print_command: false
+    )
+  end
+
+  desc "Build release AAB for Play Store"
+  lane :build_aab do
+    gradle(
+      task: "bundleRelease",
+      print_command: false
+    )
+  end
+
+  desc "Run unit tests"
+  lane :test do
+    gradle(
+      task: "test",
+      print_command: false
+    )
+  end
+
+  desc "Run lint checks"
+  lane :lint do
+    gradle(
+      task: "lint",
+      print_command: false
+    )
+  end
+
+  desc "Deploy to Play Store internal track"
+  lane :deploy_internal do
+    build_aab
+    upload_to_play_store(
+      track: "internal",
+      aab: "app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Deploy to Play Store beta track"
+  lane :deploy_beta do
+    build_aab
+    upload_to_play_store(
+      track: "beta",
+      aab: "app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Deploy to Play Store production"
+  lane :deploy_production do
+    build_aab
+    upload_to_play_store(
+      track: "production",
+      aab: "app/build/outputs/bundle/release/app-release.aab"
+    )
+  end
+
+  desc "Increment version code"
+  lane :bump_version do |options|
+    increment_version_code(
+      gradle_file_path: "app/build.gradle.kts"
+    )
+  end
+end
