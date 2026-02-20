@@ -2,6 +2,8 @@ package com.feelingmindful.awareness.data.repositories
 
 import com.feelingmindful.awareness.domain.entities.DailyPlan
 import com.feelingmindful.awareness.domain.entities.DailyTasks
+import com.feelingmindful.awareness.domain.entities.FullReflection
+import com.feelingmindful.awareness.domain.entities.MeditationSession
 import com.feelingmindful.awareness.domain.entities.ReflectionAnswer
 import com.feelingmindful.awareness.domain.entities.TaskState
 import com.feelingmindful.awareness.domain.entities.TaskStatus
@@ -128,4 +130,14 @@ class FirestoreDailyPlanRepository @Inject constructor(
 
     private fun Instant.toTimestamp(): Timestamp =
         Timestamp(epochSeconds, nanosecondsOfSecond)
+
+    override suspend fun getSessions(userId: String, limit: Int): List<MeditationSession> {
+        // Stub: session recording not yet wired; Library degrades gracefully
+        return emptyList()
+    }
+
+    override suspend fun getReflections(userId: String, limit: Int): List<FullReflection> {
+        // Stub: reflection history not yet wired; Library degrades gracefully
+        return emptyList()
+    }
 }

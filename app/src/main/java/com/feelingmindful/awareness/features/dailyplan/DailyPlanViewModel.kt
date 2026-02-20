@@ -29,7 +29,11 @@ data class DailyPlanUiState(
     val meditation: Meditation? = null,
     val mantra: Mantra? = null,
     val isMantraLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val showHealthPermissionCard: Boolean = false,
+    val showNotificationPermissionCard: Boolean = false,
+    val healthPermissionGranted: Boolean = false,
+    val notificationPermissionGranted: Boolean = false
 )
 
 @HiltViewModel
@@ -163,6 +167,28 @@ class DailyPlanViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
         }
+    }
+
+    fun onHealthPermissionResult(granted: Boolean) {
+        _uiState.value = _uiState.value.copy(
+            healthPermissionGranted = granted,
+            showHealthPermissionCard = !granted
+        )
+    }
+
+    fun onNotificationPermissionResult(granted: Boolean) {
+        _uiState.value = _uiState.value.copy(
+            notificationPermissionGranted = granted,
+            showNotificationPermissionCard = !granted
+        )
+    }
+
+    fun dismissHealthPermissionCard() {
+        _uiState.value = _uiState.value.copy(showHealthPermissionCard = false)
+    }
+
+    fun dismissNotificationPermissionCard() {
+        _uiState.value = _uiState.value.copy(showNotificationPermissionCard = false)
     }
 
     fun getGreeting(): String {

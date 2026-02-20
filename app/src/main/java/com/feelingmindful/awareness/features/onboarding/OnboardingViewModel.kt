@@ -1,5 +1,6 @@
 package com.feelingmindful.awareness.features.onboarding
 
+import android.app.Activity
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -76,6 +77,21 @@ class OnboardingViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = e.message ?: "Sign in failed"
+                )
+            }
+        }
+    }
+
+    fun signInWithApple(activity: Activity) {
+        viewModelScope.launch {
+            try {
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+                authRepository.signInWithApple(activity)
+                _uiState.value = _uiState.value.copy(isLoading = false, isSignedIn = true)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = e.message ?: "Apple sign in failed"
                 )
             }
         }

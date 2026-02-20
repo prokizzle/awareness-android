@@ -30,7 +30,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.feelingmindful.awareness.R
 import com.feelingmindful.awareness.domain.repositories.AuthRepository
-import com.feelingmindful.awareness.domain.services.OnboardingPreferences
 import com.feelingmindful.awareness.features.dailyplan.DailyPlanScreen
 import com.feelingmindful.awareness.features.library.LibraryScreen
 import com.feelingmindful.awareness.features.onboarding.OnboardingScreen
@@ -47,17 +46,20 @@ data class TabItem(
     val unselectedIcon: ImageVector
 )
 
+private val tabScreens = setOf(
+    Screen.DailyPlan.route,
+    Screen.Library.route,
+    Screen.Settings.route
+)
+
 @Composable
 fun FeelingMindfulNavHost(
     navController: NavHostController,
-    authRepository: AuthRepository,
-    onboardingPreferences: OnboardingPreferences
+    authRepository: AuthRepository
 ) {
     val currentUser by authRepository.currentUser.collectAsState(initial = null)
-    val isOnboardingComplete by onboardingPreferences.isOnboardingComplete.collectAsState(initial = false)
 
-    // Show onboarding if not complete, regardless of auth state
-    val startDestination = if (isOnboardingComplete && currentUser != null) {
+    val startDestination = if (currentUser != null) {
         Screen.DailyPlan.route
     } else {
         Screen.Onboarding.route

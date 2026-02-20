@@ -48,6 +48,25 @@ class FirestoreMeditationRepository @Inject constructor(
         return doc.toCourse()
     }
 
+    override suspend fun getCourses(): List<Course> {
+        return firestore
+            .collection("courses")
+            .get()
+            .await()
+            .documents
+            .map { it.toCourse() }
+    }
+
+    override suspend fun getAllMeditations(limit: Int): List<Meditation> {
+        return firestore
+            .collection("meditations")
+            .limit(limit.toLong())
+            .get()
+            .await()
+            .documents
+            .map { it.toMeditation() }
+    }
+
     override suspend fun getIntroCourse(): Course? {
         val docs = firestore
             .collection("courses")
