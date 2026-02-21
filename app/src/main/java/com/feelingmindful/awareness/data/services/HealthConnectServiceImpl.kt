@@ -69,7 +69,13 @@ class HealthConnectServiceImpl @Inject constructor(
                 val duration = java.time.Duration.between(record.startTime, record.endTime)
                 duration.toMinutes().toInt()
             }
+        } catch (e: SecurityException) {
+            android.util.Log.w("HealthConnectService", "Health Connect permission revoked", e)
+            0
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
         } catch (e: Exception) {
+            android.util.Log.e("HealthConnectService", "Failed to read workout data", e)
             0
         }
     }

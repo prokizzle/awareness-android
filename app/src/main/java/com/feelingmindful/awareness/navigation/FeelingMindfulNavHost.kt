@@ -13,9 +13,12 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -35,6 +38,8 @@ import com.feelingmindful.awareness.features.library.LibraryScreen
 import com.feelingmindful.awareness.features.onboarding.OnboardingScreen
 import com.feelingmindful.awareness.features.playback.PlayerScreen
 import com.feelingmindful.awareness.features.reflection.ReflectionScreen
+import com.feelingmindful.awareness.ui.components.LoadingIndicator
+import kotlinx.coroutines.flow.first
 
 /**
  * Data class representing a tab in the bottom navigation.
@@ -57,12 +62,25 @@ fun FeelingMindfulNavHost(
     navController: NavHostController,
     authRepository: AuthRepository
 ) {
-    val currentUser by authRepository.currentUser.collectAsState(initial = null)
+    // Wait for the first auth emission before deciding start destination.
+    // This prevents the race condition where collectAsState(initial = null)
+    // always starts with null, causing signed-in users to see onboarding.
+    var isAuthResolved by remember { mutableStateOf(false) }
+    var startDestination by remember { mutableStateOf(Screen.Onboarding.route) }
 
-    val startDestination = if (currentUser != null) {
-        Screen.DailyPlan.route
-    } else {
-        Screen.Onboarding.route
+    LaunchedEffect(Unit) {
+        val firstUser = authRepository.currentUser.first()
+        startDestination = if (firstUser != null) {
+            Screen.DailyPlan.route
+        } else {
+            Screen.Onboarding.route
+        }
+        isAuthResolved = true
+    }
+
+    if (!isAuthResolved) {
+        LoadingIndicator(message = "Loading...")
+        return
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()

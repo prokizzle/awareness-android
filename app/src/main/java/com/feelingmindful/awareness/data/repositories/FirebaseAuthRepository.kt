@@ -39,7 +39,9 @@ class FirebaseAuthRepository @Inject constructor(
         return result.user?.toUser(AuthProvider.GOOGLE) ?: throw Exception("Sign in failed")
     }
 
-    override suspend fun signInWithApple(activity: Activity): User {
+    override suspend fun signInWithApple(activityProvider: () -> Any): User {
+        val activity = activityProvider() as? Activity
+            ?: throw IllegalArgumentException("activityProvider must return an Activity")
         val provider = OAuthProvider.newBuilder("apple.com")
             .setScopes(listOf("email", "name"))
             .build()

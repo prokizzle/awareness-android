@@ -12,6 +12,7 @@ import com.feelingmindful.awareness.domain.repositories.MantraRepository
 import com.feelingmindful.awareness.domain.repositories.MeditationRepository
 import com.feelingmindful.awareness.domain.services.DailyPlanService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -72,6 +73,8 @@ class DailyPlanViewModel @Inject constructor(
             )
 
             loadMantra()
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             _uiState.value = _uiState.value.copy(
                 isLoading = false,
@@ -93,6 +96,8 @@ class DailyPlanViewModel @Inject constructor(
                     mantra = mantra,
                     isMantraLoading = false
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(isMantraLoading = false)
             }
@@ -107,6 +112,8 @@ class DailyPlanViewModel @Inject constructor(
             try {
                 val updated = dailyPlanService.completeMeditation(user.id, plan)
                 _uiState.value = _uiState.value.copy(dailyPlan = updated)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
@@ -121,6 +128,8 @@ class DailyPlanViewModel @Inject constructor(
             try {
                 val updated = dailyPlanService.completeCardio(user.id, plan, minutes, autoCompleted)
                 _uiState.value = _uiState.value.copy(dailyPlan = updated)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
@@ -135,6 +144,8 @@ class DailyPlanViewModel @Inject constructor(
             try {
                 val updated = dailyPlanService.uncompleteCardio(user.id, plan)
                 _uiState.value = _uiState.value.copy(dailyPlan = updated)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
@@ -149,6 +160,8 @@ class DailyPlanViewModel @Inject constructor(
             try {
                 val updated = dailyPlanService.completeMeals(user.id, plan)
                 _uiState.value = _uiState.value.copy(dailyPlan = updated)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message)
             }
@@ -163,6 +176,8 @@ class DailyPlanViewModel @Inject constructor(
             try {
                 val updated = dailyPlanService.uncompleteMeals(user.id, plan)
                 _uiState.value = _uiState.value.copy(dailyPlan = updated)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(error = e.message)
             }

@@ -101,8 +101,7 @@ fun OnboardingScreen(
 
             OutlinedButton(
                 onClick = {
-                    val activity = context as? Activity ?: return@OutlinedButton
-                    viewModel.signInWithApple(activity)
+                    viewModel.signInWithApple { context as Activity }
                 },
                 enabled = !uiState.isLoading,
                 modifier = Modifier

@@ -22,6 +22,7 @@ import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -173,6 +174,8 @@ class LibraryViewModel @Inject constructor(
                         completedMeditationIds = completedIds
                     )
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(isLoading = false, error = e.message ?: "Failed to load library")
@@ -210,8 +213,13 @@ class LibraryViewModel @Inject constructor(
                         }).toImmutableMap()
                     )
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                // Silently fail - user can try expanding again
+                android.util.Log.e("LibraryViewModel", "Failed to load meditations for course $courseId", e)
+                _uiState.update {
+                    it.copy(error = "Couldn't load course meditations. Try again.")
+                }
             }
         }
     }

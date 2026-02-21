@@ -46,6 +46,8 @@ class PlayerViewModel @Inject constructor(
                     meditation = meditation,
                     durationMs = meditation.duration * 1000L
                 )
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,

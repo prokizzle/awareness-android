@@ -1,6 +1,5 @@
 package com.feelingmindful.awareness.features.onboarding
 
-import android.app.Activity
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -73,6 +72,8 @@ class OnboardingViewModel @Inject constructor(
                         error = "Unexpected credential type"
                     )
                 }
+            } catch (e: kotlin.coroutines.cancellation.CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
@@ -82,13 +83,14 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
-    fun signInWithApple(activity: Activity) {
+    fun signInWithApple(activityProvider: () -> Any) {
         viewModelScope.launch {
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-                authRepository.signInWithApple(activity)
+                authRepository.signInWithApple(activityProvider)
                 _uiState.value = _uiState.value.copy(isLoading = false, isSignedIn = true)
             } catch (e: Exception) {
+                if (e is kotlin.coroutines.cancellation.CancellationException) throw e
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = e.message ?: "Apple sign in failed"

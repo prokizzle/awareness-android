@@ -8,6 +8,7 @@ import com.feelingmindful.awareness.domain.repositories.AuthRepository
 import com.feelingmindful.awareness.domain.repositories.MeditationRepository
 import com.feelingmindful.awareness.domain.services.DailyPlanService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,6 +48,8 @@ class ReflectionViewModel @Inject constructor(
                     isLoading = false,
                     prompts = prompts
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
@@ -97,6 +100,8 @@ class ReflectionViewModel @Inject constructor(
                 dailyPlanService.completeReflection(user.id, plan, answers)
                 _uiState.value = _uiState.value.copy(isSaving = false)
                 onComplete()
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isSaving = false,

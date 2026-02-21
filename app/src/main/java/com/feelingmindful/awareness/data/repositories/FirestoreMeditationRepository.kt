@@ -5,6 +5,7 @@ import com.feelingmindful.awareness.domain.entities.Meditation
 import com.feelingmindful.awareness.domain.entities.ReflectionPrompt
 import com.feelingmindful.awareness.domain.repositories.MeditationRepository
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import kotlinx.datetime.Instant
@@ -29,13 +30,16 @@ class FirestoreMeditationRepository @Inject constructor(
     override suspend fun getMeditations(ids: List<String>): List<Meditation> {
         if (ids.isEmpty()) return emptyList()
 
-        return firestore
-            .collection("meditations")
-            .whereIn("__name__", ids.map { firestore.collection("meditations").document(it) })
-            .get()
-            .await()
-            .documents
-            .map { it.toMeditation() }
+        // Firestore whereIn has a limit of 30 items per query
+        return ids.chunked(30).flatMap { chunk ->
+            firestore
+                .collection("meditations")
+                .whereIn(FieldPath.documentId(), chunk)
+                .get()
+                .await()
+                .documents
+                .map { it.toMeditation() }
+        }
     }
 
     override suspend fun getCourse(id: String): Course {
