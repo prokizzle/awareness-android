@@ -1,11 +1,10 @@
 package com.feelingmindful.awareness.data.repositories
 
+import com.feelingmindful.awareness.data.toKotlinxInstant
 import com.feelingmindful.awareness.domain.entities.Rescue
 import com.feelingmindful.awareness.domain.repositories.RescueRepository
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import kotlinx.datetime.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,6 +30,10 @@ class FirestoreRescueRepository @Inject constructor(
             .get()
             .await()
 
+        if (!doc.exists()) {
+            throw NoSuchElementException("Rescue not found: $id")
+        }
+
         return doc.toRescue()
     }
 
@@ -47,6 +50,4 @@ class FirestoreRescueRepository @Inject constructor(
         )
     }
 
-    private fun Timestamp.toKotlinxInstant(): Instant =
-        Instant.fromEpochSeconds(seconds, nanoseconds)
 }

@@ -8,10 +8,11 @@ import com.feelingmindful.awareness.domain.entities.ReflectionAnswer
 import com.feelingmindful.awareness.domain.entities.TaskState
 import com.feelingmindful.awareness.domain.entities.TaskStatus
 import com.feelingmindful.awareness.domain.repositories.DailyPlanRepository
+import com.feelingmindful.awareness.data.toKotlinxInstant
+import com.feelingmindful.awareness.data.toTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -124,12 +125,6 @@ class FirestoreDailyPlanRepository @Inject constructor(
         "minutes" to minutes,
         "autoCompleted" to autoCompleted
     )
-
-    private fun Timestamp.toKotlinxInstant(): Instant =
-        Instant.fromEpochSeconds(seconds, nanoseconds)
-
-    private fun Instant.toTimestamp(): Timestamp =
-        Timestamp(epochSeconds, nanosecondsOfSecond)
 
     override suspend fun getSessions(userId: String, limit: Int): List<MeditationSession> {
         // Stub: session recording not yet wired; Library degrades gracefully

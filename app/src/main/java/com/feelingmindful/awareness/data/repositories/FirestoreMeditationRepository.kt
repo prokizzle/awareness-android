@@ -1,14 +1,13 @@
 package com.feelingmindful.awareness.data.repositories
 
+import com.feelingmindful.awareness.data.toKotlinxInstant
 import com.feelingmindful.awareness.domain.entities.Course
 import com.feelingmindful.awareness.domain.entities.Meditation
 import com.feelingmindful.awareness.domain.entities.ReflectionPrompt
 import com.feelingmindful.awareness.domain.repositories.MeditationRepository
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import kotlinx.datetime.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -148,6 +147,4 @@ class FirestoreMeditationRepository @Inject constructor(
         )
     }
 
-    private fun Timestamp.toKotlinxInstant(): Instant =
-        Instant.fromEpochSeconds(seconds, nanoseconds)
 }
