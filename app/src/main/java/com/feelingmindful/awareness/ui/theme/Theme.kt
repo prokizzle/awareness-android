@@ -1,6 +1,5 @@
 package com.feelingmindful.awareness.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -12,31 +11,42 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Purple500,
+    onPrimary = SurfaceLight,
+    primaryContainer = Purple700,
+    onPrimaryContainer = SurfaceLight,
+    secondary = Gray400,
+    onSecondary = Gray900,
+    background = BackgroundDark,
+    onBackground = SurfaceLight,
+    surface = SurfaceDark,
+    onSurface = SurfaceLight,
+    surfaceVariant = Gray800,
+    onSurfaceVariant = Gray300,
+    error = Error,
+    onError = SurfaceLight
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary = Purple500,
+    onPrimary = SurfaceLight,
+    primaryContainer = Purple600,
+    onPrimaryContainer = SurfaceLight,
+    secondary = Gray600,
+    onSecondary = SurfaceLight,
+    background = BackgroundLight,
+    onBackground = Gray900,
+    surface = SurfaceLight,
+    onSurface = Gray900,
+    surfaceVariant = Gray100,
+    onSurfaceVariant = Gray600,
+    error = Error,
+    onError = SurfaceLight
 )
 
 @Composable
 fun AwarenessByChrisShanksTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -45,7 +55,6 @@ fun AwarenessByChrisShanksTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

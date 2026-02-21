@@ -13,3 +13,15 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Firebase config (contains API keys)
+google-services.json
+app/google-services.json
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/play-store-credentials.json
+fastlane/.env*
