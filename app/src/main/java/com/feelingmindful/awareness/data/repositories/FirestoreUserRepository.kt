@@ -1,5 +1,6 @@
 package com.feelingmindful.awareness.data.repositories
 
+import com.feelingmindful.awareness.domain.entities.SkillLevel
 import com.feelingmindful.awareness.domain.entities.UserProgress
 import com.feelingmindful.awareness.domain.repositories.UserRepository
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,7 +29,10 @@ class FirestoreUserRepository @Inject constructor(
                 completedMeditationIds = (doc.get("completedMeditationIds") as? List<*>)
                     ?.filterIsInstance<String>() ?: emptyList(),
                 currentCourseId = doc.getString("currentCourseId"),
-                currentCourseMeditationIndex = doc.getLong("currentCourseMeditationIndex")?.toInt() ?: 0
+                currentCourseMeditationIndex = doc.getLong("currentCourseMeditationIndex")?.toInt() ?: 0,
+                skillLevel = doc.getString("skillLevel")?.let {
+                    try { SkillLevel.valueOf(it) } catch (_: IllegalArgumentException) { SkillLevel.BEGINNER }
+                } ?: SkillLevel.BEGINNER
             )
         } else {
             UserProgress()
@@ -47,7 +51,8 @@ class FirestoreUserRepository @Inject constructor(
                     "streakDays" to progress.streakDays,
                     "completedMeditationIds" to progress.completedMeditationIds,
                     "currentCourseId" to progress.currentCourseId,
-                    "currentCourseMeditationIndex" to progress.currentCourseMeditationIndex
+                    "currentCourseMeditationIndex" to progress.currentCourseMeditationIndex,
+                    "skillLevel" to progress.skillLevel.name
                 )
             )
             .await()

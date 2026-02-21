@@ -8,5 +8,6 @@ data class UserProgress(
     val streakDays: Int = 0,
     val completedMeditationIds: List<String> = emptyList(),
     val currentCourseId: String? = null,
-    val currentCourseMeditationIndex: Int = 0
+    val currentCourseMeditationIndex: Int = 0,
+    val skillLevel: SkillLevel = SkillLevel.BEGINNER
 )
